@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* React Toastify Styles */
+@import 'react-toastify/dist/ReactToastify.css';
+
+/* Custom toast styling */
+.Toastify__toast-container {
+  top: 1rem;
+  right: 1rem;
+  width: 320px;
+}
+
+.Toastify__toast {
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #00B894 0%, #00D4AA 100%);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #D63031 0%, #E84349 100%);
+}
+
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, #FDCB6E 0%, #FFD93D 100%);
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(135deg, #74B9FF 0%, #81ECEC 100%);
+}
+
+.Toastify__progress-bar {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #F5F3FF;
+  color: #1F2937;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Drag and drop styles */
+.dragging {
+  opacity: 0.8;
+  transform: rotate(5deg);
+}
+
+.drop-zone {
+  border: 2px dashed #6C5CE7;
+  background: rgba(108, 92, 231, 0.05);
+}
+
+/* Card animations */
+.task-card {
+  transition: all 0.15s ease-out;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Priority badges */
+.priority-low {
+  background: linear-gradient(135deg, #E5E7EB 0%, #F3F4F6 100%);
+  color: #6B7280;
+}
+
+.priority-medium {
+  background: linear-gradient(135deg, #74B9FF 0%, #81ECEC 100%);
+  color: #FFFFFF;
+}
+
+.priority-high {
+  background: linear-gradient(135deg, #FDCB6E 0%, #FFD93D 100%);
+  color: #1F2937;
+}
+
+.priority-urgent {
+  background: linear-gradient(135deg, #D63031 0%, #E84349 100%);
+  color: #FFFFFF;
+}
+
+/* Status column colors */
+.column-todo {
+  background: linear-gradient(135deg, #E5E7EB 0%, #F3F4F6 100%);
+}
+
+.column-progress {
+  background: linear-gradient(135deg, #74B9FF 0%, #81ECEC 100%);
+}
+
+.column-done {
+  background: linear-gradient(135deg, #00B894 0%, #00D4AA 100%);
+}
+
+/* Loading shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #edeef1 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-size: 800px 104px;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

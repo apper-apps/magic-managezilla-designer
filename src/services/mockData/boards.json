@@ -1,0 +1,103 @@
+[
+  {
+    "Id": 1,
+    "name": "Website Redesign",
+    "columns": [
+      {
+        "id": "col-1",
+        "name": "To Do",
+        "position": 1,
+        "color": "#E5E7EB",
+        "taskIds": []
+      },
+      {
+        "id": "col-2",
+        "name": "In Progress",
+        "position": 2,
+        "color": "#74B9FF",
+        "taskIds": []
+      },
+      {
+        "id": "col-3",
+        "name": "Done",
+        "position": 3,
+        "color": "#00B894",
+        "taskIds": []
+      }
+    ],
+    "createdAt": "2024-01-15T08:00:00.000Z",
+    "updatedAt": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "Id": 2,
+    "name": "Mobile App Development",
+    "columns": [
+      {
+        "id": "col-4",
+        "name": "Backlog",
+        "position": 1,
+        "color": "#E5E7EB",
+        "taskIds": []
+      },
+      {
+        "id": "col-5",
+        "name": "In Development",
+        "position": 2,
+        "color": "#74B9FF",
+        "taskIds": []
+      },
+      {
+        "id": "col-6",
+        "name": "Testing",
+        "position": 3,
+        "color": "#FDCB6E",
+        "taskIds": []
+      },
+      {
+        "id": "col-7",
+        "name": "Deployed",
+        "position": 4,
+        "color": "#00B894",
+        "taskIds": []
+      }
+    ],
+    "createdAt": "2024-01-16T09:30:00.000Z",
+    "updatedAt": "2024-01-16T09:30:00.000Z"
+  },
+  {
+    "Id": 3,
+    "name": "Marketing Campaign",
+    "columns": [
+      {
+        "id": "col-8",
+        "name": "Ideas",
+        "position": 1,
+        "color": "#E5E7EB",
+        "taskIds": []
+      },
+      {
+        "id": "col-9",
+        "name": "Planning",
+        "position": 2,
+        "color": "#74B9FF",
+        "taskIds": []
+      },
+      {
+        "id": "col-10",
+        "name": "Execution",
+        "position": 3,
+        "color": "#FDCB6E",
+        "taskIds": []
+      },
+      {
+        "id": "col-11",
+        "name": "Completed",
+        "position": 4,
+        "color": "#00B894",
+        "taskIds": []
+      }
+    ],
+    "createdAt": "2024-01-17T10:15:00.000Z",
+    "updatedAt": "2024-01-17T10:15:00.000Z"
+  }
+]
