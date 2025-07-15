@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Badge from '@/components/atoms/Badge';
-import ApperIcon from '@/components/ApperIcon';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import { adminService } from '@/services/api/adminService';
-import { userService } from '@/services/api/userService';
-import { taskService } from '@/services/api/taskService';
-import { boardService } from '@/services/api/boardService';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Settings from "@/components/pages/Settings";
+import Dashboard from "@/components/pages/Dashboard";
+import { userService } from "@/services/api/userService";
+import { taskService } from "@/services/api/taskService";
+import { boardService } from "@/services/api/boardService";
+import { adminService } from "@/services/api/adminService";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -24,13 +26,18 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userModalOpen, setUserModalOpen] = useState(false);
+const [userModalOpen, setUserModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [userForm, setUserForm] = useState({
     name: '',
     email: '',
     role: 'user',
     status: 'active'
+  });
+  const [settingsForm, setSettingsForm] = useState({
+    siteName: '',
+    defaultLanguage: '',
+    timezone: ''
   });
 
   const tabs = [
@@ -59,10 +66,17 @@ const AdminDashboard = () => {
 
       const analytics = calculateAnalytics(users, tasks, boards);
       
-      setData({
+setData({
         ...adminData,
         users,
         analytics
+      });
+      
+      // Initialize settings form with loaded data
+      setSettingsForm({
+        siteName: adminData.settings?.siteName || 'ManageZilla',
+        defaultLanguage: adminData.settings?.defaultLanguage || 'en',
+        timezone: adminData.settings?.timezone || 'UTC'
       });
     } catch (err) {
       setError(err.message);
@@ -131,6 +145,26 @@ const AdminDashboard = () => {
       } catch (err) {
         toast.error(err.message);
       }
+    }
+};
+
+  const handleSettingsSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await adminService.updateSettings(settingsForm);
+      toast.success('Settings updated successfully');
+      
+      // Update local data state
+      setData(prev => ({
+        ...prev,
+        settings: {
+          ...prev.settings,
+          ...settingsForm
+        }
+      }));
+    } catch (err) {
+      toast.error(err.message || 'Failed to update settings');
     }
   };
 
@@ -466,20 +500,27 @@ const AdminDashboard = () => {
     </div>
   );
 
-  const renderSettings = () => (
+const renderSettings = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900">Application Settings</h3>
       
       <Card className="p-6">
         <h4 className="font-medium text-gray-900 mb-4">General Settings</h4>
-        <div className="space-y-4">
+        <form onSubmit={handleSettingsSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-            <Input defaultValue="ManageZilla" />
+            <Input 
+              value={settingsForm.siteName}
+              onChange={(e) => setSettingsForm({ ...settingsForm, siteName: e.target.value })}
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Default Language</label>
-            <Select defaultValue="en">
+            <Select 
+              value={settingsForm.defaultLanguage}
+              onChange={(e) => setSettingsForm({ ...settingsForm, defaultLanguage: e.target.value })}
+            >
               <option value="en">English</option>
               <option value="es">Spanish</option>
               <option value="fr">French</option>
@@ -487,16 +528,19 @@ const AdminDashboard = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-            <Select defaultValue="UTC">
+            <Select 
+              value={settingsForm.timezone}
+              onChange={(e) => setSettingsForm({ ...settingsForm, timezone: e.target.value })}
+            >
               <option value="UTC">UTC</option>
               <option value="EST">Eastern Time</option>
               <option value="PST">Pacific Time</option>
             </Select>
           </div>
-        </div>
-        <div className="mt-6">
-          <Button>Save Settings</Button>
-        </div>
+          <div className="mt-6">
+            <Button type="submit">Save Settings</Button>
+          </div>
+        </form>
       </Card>
     </div>
   );
