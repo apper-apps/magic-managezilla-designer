@@ -51,7 +51,7 @@ const BoardView = ({ board, onTaskClick, onTaskUpdate }) => {
     e.preventDefault();
   };
 
-  const handleDrop = async (e, columnId) => {
+const handleDrop = async (e, columnId) => {
     e.preventDefault();
     
     if (!draggedTask || draggedTask.columnId === columnId) {
@@ -62,20 +62,26 @@ const BoardView = ({ board, onTaskClick, onTaskUpdate }) => {
       const updatedTask = { ...draggedTask, columnId };
       await taskService.update(draggedTask.Id, updatedTask);
       
-      setTasks(tasks.map(task => 
-        task.Id === draggedTask.Id ? updatedTask : task
-      ));
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.Id === draggedTask.Id
+            ? { ...task, columnId }
+            : task
+        )
+      );
+      
+      if (onTaskUpdate) {
+        onTaskUpdate(updatedTask);
+      }
       
       toast.success('Task moved successfully');
-      onTaskUpdate?.(updatedTask);
-    } catch (error) {
+    } catch (err) {
       toast.error('Failed to move task');
+      console.error('Error moving task:', err);
     }
-    
-    setDraggedTask(null);
   };
 
-const getTasksByColumn = (columnId) => {
+  const getTasksByColumn = (columnId) => {
     return tasks.filter(task => 
       task.columnId === columnId && 
       board.columns.some(col => col.id === task.columnId)
@@ -83,7 +89,7 @@ const getTasksByColumn = (columnId) => {
   };
 
   const getUserById = (userId) => {
-    return users.find(user => user.Id === userId);
+    return users.find(user => user.Id === userId) || null;
   };
 
   const getColumnColor = (columnName) => {

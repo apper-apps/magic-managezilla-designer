@@ -1,21 +1,23 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { format } from 'date-fns';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
-import Avatar from '@/components/atoms/Avatar';
-import FilterBar from '@/components/molecules/FilterBar';
-import PriorityBadge from '@/components/molecules/PriorityBadge';
-import ApperIcon from '@/components/ApperIcon';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import { taskService } from '@/services/api/taskService';
-import { userService } from '@/services/api/userService';
-import { boardService } from '@/services/api/boardService';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Avatar from "@/components/atoms/Avatar";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import FilterBar from "@/components/molecules/FilterBar";
+import PriorityBadge from "@/components/molecules/PriorityBadge";
+import { userService } from "@/services/api/userService";
+import { taskService } from "@/services/api/taskService";
+import { boardService } from "@/services/api/boardService";
 
 const MyWork = () => {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -138,8 +140,7 @@ const MyWork = () => {
 <Button 
           variant="primary"
           onClick={() => {
-            // TODO: Open create task modal
-            console.log('Opening create task modal');
+            navigate('/project/1');
           }}
         >
           <ApperIcon name="Plus" size={16} />
@@ -186,8 +187,7 @@ const MyWork = () => {
             icon="ClipboardList"
             actionLabel="Create New Task"
 onAction={() => {
-              // TODO: Open create task modal
-              console.log('Creating new task');
+              navigate('/project/1');
             }}
           />
         ) : (
@@ -256,8 +256,10 @@ onAction={() => {
                         variant="ghost" 
                         size="sm"
                         onClick={() => {
-                          // TODO: Open task options menu
-                          console.log('Opening options for task', task.title);
+                          const board = boards.find(b => b.columns.some(c => c.id === task.columnId));
+                          if (board) {
+                            navigate(`/project/${board.Id}`);
+                          }
                         }}
                       >
                         <ApperIcon name="MoreHorizontal" size={16} />

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 import Header from '@/components/organisms/Header';
 import Sidebar from '@/components/organisms/Sidebar';
 import { boardService } from '@/services/api/boardService';
-
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [boards, setBoards] = useState([]);
@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  return (
+return (
     <div className="min-h-screen bg-background">
       <Sidebar 
         boards={boards}
@@ -37,6 +37,19 @@ const Layout = ({ children }) => {
           {children}
         </main>
       </div>
+      
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

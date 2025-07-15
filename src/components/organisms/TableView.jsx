@@ -56,7 +56,11 @@ const TableView = ({ board, onTaskClick, onTaskUpdate }) => {
     }
   };
 
-const sortedTasks = [...boardTasks].sort((a, b) => {
+const boardTasks = tasks.filter(task => 
+    board.columns.some(col => col.id === task.columnId)
+  );
+
+  const sortedTasks = [...boardTasks].sort((a, b) => {
     let aValue = a[sortField];
     let bValue = b[sortField];
 
@@ -81,9 +85,6 @@ const sortedTasks = [...boardTasks].sort((a, b) => {
     if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
     return 0;
   });
-const boardTasks = tasks.filter(task => 
-    board.columns.some(col => col.id === task.columnId)
-  );
 
   const SortIcon = ({ field }) => {
     if (sortField !== field) return <ApperIcon name="ArrowUpDown" size={16} className="text-gray-400" />;

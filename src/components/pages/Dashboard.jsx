@@ -184,8 +184,7 @@ const Dashboard = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => {
-                  // TODO: Open new project modal
-                  console.log('Opening new project modal');
+                  navigate('/');
                 }}
               >
                 <ApperIcon name="Plus" size={16} />
@@ -243,8 +242,7 @@ const Dashboard = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => {
-                  // TODO: Open recent activity options
-                  console.log('Opening recent activity options');
+                  navigate('/my-work');
                 }}
               >
                 <ApperIcon name="MoreHorizontal" size={16} />
@@ -290,8 +288,7 @@ const Dashboard = () => {
                 whileHover={{ scale: 1.02 }}
 className="p-4 bg-gradient-to-br from-error/10 to-warning/10 rounded-lg border border-error/20 cursor-pointer"
                 onClick={() => {
-                  // TODO: Navigate to task details
-                  console.log('Opening task', task.title);
+                  navigate('/my-work');
                 }}
               >
                 <div className="flex items-center justify-between mb-2">
