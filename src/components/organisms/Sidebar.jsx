@@ -14,10 +14,11 @@ const Sidebar = ({
   const location = useLocation();
   const [expandedProjects, setExpandedProjects] = useState(true);
 
-  const navItems = [
+const navItems = [
     { name: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
     { name: 'My Work', path: '/my-work', icon: 'User' },
     { name: 'Team', path: '/team', icon: 'Users' },
+    { name: 'Admin', path: '/admin', icon: 'Shield' },
     { name: 'Settings', path: '/settings', icon: 'Settings' }
   ];
 

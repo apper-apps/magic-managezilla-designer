@@ -6,17 +6,19 @@ import MyWork from '@/components/pages/MyWork';
 import ProjectBoard from '@/components/pages/ProjectBoard';
 import TeamView from '@/components/pages/TeamView';
 import Settings from '@/components/pages/Settings';
+import AdminDashboard from '@/components/pages/AdminDashboard';
 
 function App() {
   return (
     <>
       <Layout>
-        <Routes>
+<Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/my-work" element={<MyWork />} />
           <Route path="/project/:boardId" element={<ProjectBoard />} />
           <Route path="/team" element={<TeamView />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </Layout>
       <ToastContainer
