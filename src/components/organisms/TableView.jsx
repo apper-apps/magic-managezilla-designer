@@ -56,7 +56,7 @@ const TableView = ({ board, onTaskClick, onTaskUpdate }) => {
     }
   };
 
-  const sortedTasks = [...tasks].sort((a, b) => {
+const sortedTasks = [...boardTasks].sort((a, b) => {
     let aValue = a[sortField];
     let bValue = b[sortField];
 
@@ -81,6 +81,9 @@ const TableView = ({ board, onTaskClick, onTaskUpdate }) => {
     if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
     return 0;
   });
+const boardTasks = tasks.filter(task => 
+    board.columns.some(col => col.id === task.columnId)
+  );
 
   const SortIcon = ({ field }) => {
     if (sortField !== field) return <ApperIcon name="ArrowUpDown" size={16} className="text-gray-400" />;
@@ -232,12 +235,21 @@ const TableView = ({ board, onTaskClick, onTaskUpdate }) => {
                         >
                           <ApperIcon name="Edit" size={16} />
                         </Button>
-                        <Button
+<Button
                           variant="ghost"
                           size="sm"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
-                            // Handle delete
+                            if (window.confirm('Are you sure you want to delete this task?')) {
+                              try {
+                                await taskService.delete(task.Id);
+                                setTasks(tasks.filter(t => t.Id !== task.Id));
+                                toast.success('Task deleted successfully');
+                                onTaskUpdate?.(null);
+                              } catch (error) {
+                                toast.error('Failed to delete task');
+                              }
+                            }
                           }}
                         >
                           <ApperIcon name="Trash2" size={16} />

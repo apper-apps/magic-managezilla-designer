@@ -102,7 +102,13 @@ const TeamView = () => {
           <h1 className="text-2xl font-bold text-gray-900">Team</h1>
           <p className="text-gray-600">Manage your team and track their progress</p>
         </div>
-        <Button variant="primary">
+<Button 
+          variant="primary"
+          onClick={() => {
+            // TODO: Open invite member modal
+            console.log('Opening invite member modal');
+          }}
+        >
           <ApperIcon name="UserPlus" size={16} />
           Invite Member
         </Button>
@@ -231,13 +237,34 @@ const TeamView = () => {
                 </div>
 
                 <div className="mt-4 flex justify-end space-x-2">
-                  <Button variant="ghost" size="sm">
+<Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Open chat with user
+                      console.log('Opening chat with', user.name);
+                    }}
+                  >
                     <ApperIcon name="MessageCircle" size={16} />
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Send email to user
+                      console.log('Sending email to', user.email);
+                    }}
+                  >
                     <ApperIcon name="Mail" size={16} />
                   </Button>
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Open user options menu
+                      console.log('Opening options for', user.name);
+                    }}
+                  >
                     <ApperIcon name="MoreHorizontal" size={16} />
                   </Button>
                 </div>

@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import TaskCard from '@/components/molecules/TaskCard';
-import ApperIcon from '@/components/ApperIcon';
-import { taskService } from '@/services/api/taskService';
-import { userService } from '@/services/api/userService';
-import { cn } from '@/utils/cn';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import TaskCard from "@/components/molecules/TaskCard";
+import { userService } from "@/services/api/userService";
+import { taskService } from "@/services/api/taskService";
 
 const BoardView = ({ board, onTaskClick, onTaskUpdate }) => {
   const [tasks, setTasks] = useState([]);
@@ -73,8 +75,11 @@ const BoardView = ({ board, onTaskClick, onTaskUpdate }) => {
     setDraggedTask(null);
   };
 
-  const getTasksByColumn = (columnId) => {
-    return tasks.filter(task => task.columnId === columnId);
+const getTasksByColumn = (columnId) => {
+    return tasks.filter(task => 
+      task.columnId === columnId && 
+      board.columns.some(col => col.id === task.columnId)
+    );
   };
 
   const getUserById = (userId) => {
@@ -155,7 +160,13 @@ const BoardView = ({ board, onTaskClick, onTaskUpdate }) => {
                     ({columnTasks.length})
                   </span>
                 </div>
-                <Button variant="ghost" size="sm">
+<Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    onTaskClick(null);
+                  }}
+                >
                   <ApperIcon name="Plus" size={16} />
                 </Button>
               </div>

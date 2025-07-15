@@ -27,9 +27,20 @@ const Header = ({ onMenuToggle, className }) => {
     }
   };
 
-  const handleSearch = (term) => {
+const handleSearch = (term) => {
     setSearchTerm(term);
-    // Implement search functionality
+    // TODO: Implement global search functionality
+    console.log('Searching for:', term);
+  };
+
+  const handleNotificationClick = () => {
+    // TODO: Open notifications panel
+    console.log('Opening notifications');
+  };
+
+  const handleSettingsClick = () => {
+    // TODO: Navigate to settings or open settings menu
+    console.log('Opening settings');
   };
 
   return (
@@ -66,12 +77,21 @@ const Header = ({ onMenuToggle, className }) => {
 
       {/* Right Section */}
       <div className="flex items-center space-x-3">
-        <Button variant="ghost" size="sm" className="relative">
+<Button 
+          variant="ghost" 
+          size="sm" 
+          className="relative"
+          onClick={handleNotificationClick}
+        >
           <ApperIcon name="Bell" size={20} />
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full"></span>
         </Button>
         
-        <Button variant="ghost" size="sm">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={handleSettingsClick}
+        >
           <ApperIcon name="Settings" size={20} />
         </Button>
         

@@ -135,7 +135,13 @@ const MyWork = () => {
           <h1 className="text-2xl font-bold text-gray-900">My Work</h1>
           <p className="text-gray-600">Manage your tasks and track your progress</p>
         </div>
-        <Button variant="primary">
+<Button 
+          variant="primary"
+          onClick={() => {
+            // TODO: Open create task modal
+            console.log('Opening create task modal');
+          }}
+        >
           <ApperIcon name="Plus" size={16} />
           Create Task
         </Button>
@@ -179,7 +185,10 @@ const MyWork = () => {
             message="No tasks match your current filters. Try adjusting your filters or create a new task."
             icon="ClipboardList"
             actionLabel="Create New Task"
-            onAction={() => console.log('Create task')}
+onAction={() => {
+              // TODO: Open create task modal
+              console.log('Creating new task');
+            }}
           />
         ) : (
           filteredTasks.map(task => {
@@ -243,7 +252,14 @@ const MyWork = () => {
                           <span className="text-sm text-gray-600">{user.name}</span>
                         </div>
                       )}
-                      <Button variant="ghost" size="sm">
+<Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          // TODO: Open task options menu
+                          console.log('Opening options for task', task.title);
+                        }}
+                      >
                         <ApperIcon name="MoreHorizontal" size={16} />
                       </Button>
                     </div>

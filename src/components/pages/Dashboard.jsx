@@ -180,7 +180,14 @@ const Dashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Active Projects</h3>
-              <Button variant="ghost" size="sm">
+<Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => {
+                  // TODO: Open new project modal
+                  console.log('Opening new project modal');
+                }}
+              >
                 <ApperIcon name="Plus" size={16} />
                 New Project
               </Button>
@@ -232,7 +239,14 @@ const Dashboard = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-              <Button variant="ghost" size="sm">
+<Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => {
+                  // TODO: Open recent activity options
+                  console.log('Opening recent activity options');
+                }}
+              >
                 <ApperIcon name="MoreHorizontal" size={16} />
               </Button>
             </div>
@@ -274,7 +288,11 @@ const Dashboard = () => {
               <motion.div
                 key={task.Id}
                 whileHover={{ scale: 1.02 }}
-                className="p-4 bg-gradient-to-br from-error/10 to-warning/10 rounded-lg border border-error/20 cursor-pointer"
+className="p-4 bg-gradient-to-br from-error/10 to-warning/10 rounded-lg border border-error/20 cursor-pointer"
+                onClick={() => {
+                  // TODO: Navigate to task details
+                  console.log('Opening task', task.title);
+                }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
