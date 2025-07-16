@@ -3,12 +3,13 @@ import { useLocation } from 'react-router-dom';
 import Button from '@/components/atoms/Button';
 import SearchBar from '@/components/molecules/SearchBar';
 import ApperIcon from '@/components/ApperIcon';
+import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/cn';
 
 const Header = ({ onMenuToggle, className }) => {
-  const location = useLocation();
+const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
-
+  const { isDarkMode, toggleTheme } = useTheme();
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/':
@@ -44,8 +45,8 @@ const handleSearch = (term) => {
   };
 
   return (
-    <header className={cn(
-      'bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 lg:px-6',
+<header className={cn(
+      'bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-between px-4 lg:px-6 transition-colors duration-200',
       className
     )}>
       {/* Left Section */}
@@ -59,8 +60,8 @@ const handleSearch = (term) => {
           <ApperIcon name="Menu" size={20} />
         </Button>
         
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+<div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {getPageTitle()}
           </h1>
         </div>
@@ -76,8 +77,17 @@ const handleSearch = (term) => {
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center space-x-3">
-<Button 
+<div className="flex items-center space-x-3">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={toggleTheme}
+          className="relative"
+        >
+          <ApperIcon name={isDarkMode ? "Sun" : "Moon"} size={20} />
+        </Button>
+        
+        <Button 
           variant="ghost" 
           size="sm" 
           className="relative"
@@ -95,7 +105,7 @@ const handleSearch = (term) => {
           <ApperIcon name="Settings" size={20} />
         </Button>
         
-        <div className="w-8 h-8 bg-gradient-to-br from-accent to-pink-400 rounded-full flex items-center justify-center">
+<div className="w-8 h-8 bg-gradient-to-br from-accent to-pink-400 dark:from-dark-accent dark:to-pink-500 rounded-full flex items-center justify-center">
           <span className="text-white font-medium text-sm">JD</span>
         </div>
       </div>

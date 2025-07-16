@@ -102,13 +102,13 @@ actionLabel="Invite Team Member"
     );
   }
 
-  return (
-    <div className="p-6 space-y-6">
+return (
+    <div className="p-6 space-y-6 bg-background dark:bg-dark-background min-h-screen transition-colors duration-200">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Team</h1>
-          <p className="text-gray-600">Manage your team and track their progress</p>
+<div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Team</h1>
+          <p className="text-gray-600 dark:text-gray-400">Manage your team and track their progress</p>
         </div>
 <Button 
           variant="primary"
@@ -121,7 +121,7 @@ actionLabel="Invite Team Member"
 
       {/* Team Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-primary to-secondary text-white">
+<Card className="p-6 bg-gradient-to-br from-primary to-secondary dark:from-dark-primary dark:to-dark-secondary text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-white/80">Total Members</p>
@@ -134,7 +134,7 @@ actionLabel="Invite Team Member"
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-success to-green-400 text-white">
+<Card className="p-6 bg-gradient-to-br from-success to-green-400 dark:from-dark-success dark:to-green-500 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-white/80">Active Tasks</p>
@@ -147,7 +147,7 @@ actionLabel="Invite Team Member"
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-warning to-yellow-400 text-white">
+<Card className="p-6 bg-gradient-to-br from-warning to-yellow-400 dark:from-dark-warning dark:to-yellow-500 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-white/80">Projects</p>
@@ -160,7 +160,7 @@ actionLabel="Invite Team Member"
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-accent to-pink-400 text-white">
+<Card className="p-6 bg-gradient-to-br from-accent to-pink-400 dark:from-dark-accent dark:to-pink-500 text-white">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-white/80">Completion</p>
@@ -194,7 +194,7 @@ actionLabel="Invite Team Member"
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+<Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-dark-surface border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <Avatar
@@ -204,8 +204,8 @@ actionLabel="Invite Team Member"
                       size="lg"
                     />
                     <div>
-                      <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                      <p className="text-sm text-gray-600">{user.email}</p>
+<h3 className="font-semibold text-gray-900 dark:text-white">{user.name}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
                     </div>
                   </div>
                   <ProgressRing progress={stats.completionRate} size="md" />
@@ -214,29 +214,29 @@ actionLabel="Invite Team Member"
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div className="text-center">
                     <p className="text-2xl font-bold text-primary">{stats.totalTasks}</p>
-                    <p className="text-xs text-gray-500">Total</p>
+<p className="text-xs text-gray-500 dark:text-gray-400">Total</p>
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-success">{stats.completedTasks}</p>
-                    <p className="text-xs text-gray-500">Completed</p>
+<p className="text-xs text-gray-500 dark:text-gray-400">Completed</p>
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-error">{stats.overdueTasks}</p>
-                    <p className="text-xs text-gray-500">Overdue</p>
+<p className="text-xs text-gray-500 dark:text-gray-400">Overdue</p>
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Recent Tasks</h4>
+<div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Recent Tasks</h4>
                   <div className="space-y-2">
                     {recentTasks.map(task => (
                       <div key={task.Id} className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        <span className="text-sm text-gray-600 truncate">{task.title}</span>
+                        <div className="w-2 h-2 bg-primary dark:bg-dark-primary rounded-full"></div>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 truncate">{task.title}</span>
                       </div>
                     ))}
                     {recentTasks.length === 0 && (
-                      <p className="text-sm text-gray-400">No recent tasks</p>
+<p className="text-sm text-gray-400 dark:text-gray-500">No recent tasks</p>
                     )}
                   </div>
                 </div>
@@ -386,20 +386,20 @@ const InviteModal = ({ isOpen, onClose, onInvite, inviteForm, setInviteForm, isI
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+<div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
+        className="bg-white dark:bg-dark-surface rounded-lg shadow-xl max-w-md w-full mx-4 p-6 border-0 dark:border dark:border-gray-700"
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Invite Team Member</h2>
+<h2 className="text-xl font-semibold text-gray-900 dark:text-white">Invite Team Member</h2>
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             <ApperIcon name="X" size={20} />
           </Button>
@@ -486,12 +486,12 @@ const UserOptionsMenu = ({ user, onClose, onEdit, onRemove, onRoleChange, isUpda
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-dark-surface rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
       >
         <div className="py-2">
           <button
             onClick={() => onEdit(user)}
-            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center space-x-2"
           >
             <ApperIcon name="Edit" size={16} />
             <span>Edit Profile</span>
@@ -499,7 +499,7 @@ const UserOptionsMenu = ({ user, onClose, onEdit, onRemove, onRoleChange, isUpda
           
           <button
             onClick={() => setShowRoleSelector(!showRoleSelector)}
-            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between"
             disabled={isUpdatingRole}
           >
             <div className="flex items-center space-x-2">
@@ -510,13 +510,13 @@ const UserOptionsMenu = ({ user, onClose, onEdit, onRemove, onRoleChange, isUpda
           </button>
 
           {showRoleSelector && (
-            <div className="border-t border-gray-100 py-1">
+<div className="border-t border-gray-100 dark:border-gray-700 py-1">
               {['member', 'admin', 'manager', 'viewer'].map(role => (
                 <button
                   key={role}
                   onClick={() => onRoleChange(user.Id, role)}
-                  className={`w-full px-8 py-2 text-left text-sm hover:bg-gray-50 capitalize ${
-                    user.role === role ? 'text-primary font-medium' : 'text-gray-600'
+className={`w-full px-8 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 capitalize ${
+                    user.role === role ? 'text-primary dark:text-dark-primary font-medium' : 'text-gray-600 dark:text-gray-400'
                   }`}
                   disabled={isUpdatingRole || user.role === role}
                 >
@@ -533,10 +533,10 @@ const UserOptionsMenu = ({ user, onClose, onEdit, onRemove, onRoleChange, isUpda
             </div>
           )}
 
-          <div className="border-t border-gray-100 pt-1">
+<div className="border-t border-gray-100 dark:border-gray-700 pt-1">
             <button
               onClick={() => onRemove(user)}
-              className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-2"
             >
               <ApperIcon name="UserMinus" size={16} />
               <span>Remove from Team</span>
