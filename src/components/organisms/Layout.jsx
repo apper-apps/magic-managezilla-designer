@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
-import Header from '@/components/organisms/Header';
-import Sidebar from '@/components/organisms/Sidebar';
-import { boardService } from '@/services/api/boardService';
+import React, { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import Sidebar from "@/components/organisms/Sidebar";
+import Header from "@/components/organisms/Header";
+import { boardService } from "@/services/api/boardService";
+import { useTheme } from "@/contexts/ThemeContext";
+
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [boards, setBoards] = useState([]);
-
+  const { isDarkMode } = useTheme();
   useEffect(() => {
     const loadBoards = async () => {
       try {
@@ -19,10 +21,19 @@ const Layout = ({ children }) => {
     loadBoards();
   }, []);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
 return (
     <div className="min-h-screen bg-background">
       <Sidebar 
@@ -37,8 +48,7 @@ return (
           {children}
         </main>
       </div>
-      
-      <ToastContainer
+<ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -48,7 +58,10 @@ return (
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme={isDarkMode ? "dark" : "light"}
+        style={{
+          zIndex: 9999
+        }}
       />
     </div>
   );
