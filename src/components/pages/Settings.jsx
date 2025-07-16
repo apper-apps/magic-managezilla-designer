@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import FormField from '@/components/molecules/FormField';
 import ApperIcon from '@/components/ApperIcon';
+import Loading from '@/components/ui/Loading';
+import Error from '@/components/ui/Error';
+import { adminService } from '@/services/api/adminService';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [formData, setFormData] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
+    name: '',
+    email: '',
+    bio: '',
     notifications: {
       email: true,
       push: true,
@@ -21,6 +26,10 @@ const Settings = () => {
       timezone: 'UTC'
     }
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const tabs = [
     { id: 'profile', name: 'Profile', icon: 'User' },
@@ -29,11 +38,56 @@ const Settings = () => {
     { id: 'security', name: 'Security', icon: 'Shield' }
   ];
 
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const settings = await adminService.getUserSettings();
+      setFormData(settings);
+    } catch (err) {
+      setError(err.message);
+      toast.error('Failed to load settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateForm = (section) => {
+    const errors = {};
+    
+    if (section === 'profile') {
+      if (!formData.name.trim()) {
+        errors.name = 'Name is required';
+      }
+      if (!formData.email.trim()) {
+        errors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = 'Email is invalid';
+      }
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [field]: undefined
+      }));
+    }
   };
 
   const handleNestedChange = (section, field, value) => {
@@ -46,10 +100,50 @@ const Settings = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Saving settings:', formData);
-    // Implement save functionality
+  const handleSave = async (section) => {
+    if (!validateForm(section)) {
+      toast.error('Please fix validation errors');
+      return;
+    }
+
+    setSaving(true);
+    
+    try {
+      let result;
+      switch (section) {
+        case 'profile':
+          result = await adminService.updateProfile({
+            name: formData.name,
+            email: formData.email,
+            bio: formData.bio
+          });
+          break;
+        case 'notifications':
+          result = await adminService.updateNotifications(formData.notifications);
+          break;
+        case 'preferences':
+          result = await adminService.updatePreferences(formData.preferences);
+          break;
+        default:
+          throw new Error('Invalid section');
+      }
+      
+      setFormData(prev => ({ ...prev, ...result }));
+      toast.success(`${section.charAt(0).toUpperCase() + section.slice(1)} settings saved successfully`);
+    } catch (err) {
+      toast.error(`Failed to save ${section} settings: ${err.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return <Loading type="dashboard" />;
+  }
+
+  if (error) {
+    return <Error title="Settings Error" message={error} onRetry={loadSettings} />;
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -103,12 +197,13 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <FormField
+<FormField
                   label="Full Name"
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   placeholder="Enter your full name"
+                  error={validationErrors.name}
                 />
 
                 <FormField
@@ -117,18 +212,40 @@ const Settings = () => {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   placeholder="Enter your email"
+                  error={validationErrors.email}
                 />
 
                 <FormField
                   label="Bio"
                   type="textarea"
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
                   placeholder="Tell us about yourself"
                   rows={4}
                 />
 
                 <div className="flex justify-end space-x-3">
-                  <Button variant="outline">Cancel</Button>
-                  <Button variant="primary" onClick={handleSave}>Save Changes</Button>
+                  <Button 
+                    variant="outline" 
+                    disabled={saving}
+                    onClick={() => setFormData(prev => ({ ...prev, name: '', email: '', bio: '' }))}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => handleSave('profile')}
+                    disabled={saving}
+                  >
+                    {saving ? (
+                      <>
+                        <ApperIcon name="Loader" size={16} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
                 </div>
               </div>
             </motion.div>
@@ -193,9 +310,31 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end space-x-3">
-                  <Button variant="outline">Cancel</Button>
-                  <Button variant="primary" onClick={handleSave}>Save Changes</Button>
+<div className="flex justify-end space-x-3">
+                  <Button 
+                    variant="outline" 
+                    disabled={saving}
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      notifications: { email: true, push: true, mentions: true }
+                    }))}
+                  >
+                    Reset
+                  </Button>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => handleSave('notifications')}
+                    disabled={saving}
+                  >
+                    {saving ? (
+                      <>
+                        <ApperIcon name="Loader" size={16} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
                 </div>
               </div>
             </motion.div>
@@ -245,9 +384,31 @@ const Settings = () => {
                   <option value="CET">Central European Time</option>
                 </FormField>
 
-                <div className="flex justify-end space-x-3">
-                  <Button variant="outline">Cancel</Button>
-                  <Button variant="primary" onClick={handleSave}>Save Changes</Button>
+<div className="flex justify-end space-x-3">
+                  <Button 
+                    variant="outline" 
+                    disabled={saving}
+                    onClick={() => setFormData(prev => ({
+                      ...prev,
+                      preferences: { theme: 'light', language: 'en', timezone: 'UTC' }
+                    }))}
+                  >
+                    Reset
+                  </Button>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => handleSave('preferences')}
+                    disabled={saving}
+                  >
+                    {saving ? (
+                      <>
+                        <ApperIcon name="Loader" size={16} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
                 </div>
               </div>
             </motion.div>

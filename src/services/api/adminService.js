@@ -19,13 +19,61 @@ export const adminService = {
     return { ...adminData.analytics };
   },
 
-  async updateSettings(settingsData) {
+async updateSettings(settingsData) {
     await delay(300);
     adminData.settings = {
       ...adminData.settings,
       ...settingsData
     };
     return { ...adminData.settings };
+  },
+
+  async getUserSettings() {
+    await delay(200);
+    return {
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      bio: 'Product Manager focused on user experience and team collaboration.',
+      notifications: {
+        email: true,
+        push: true,
+        mentions: true
+      },
+      preferences: {
+        theme: 'light',
+        language: 'en',
+        timezone: 'UTC'
+      }
+    };
+  },
+
+  async updateProfile(profileData) {
+    await delay(300);
+    // Simulate profile update
+    if (!profileData.name || !profileData.email) {
+      throw new Error('Name and email are required');
+    }
+    return {
+      name: profileData.name,
+      email: profileData.email,
+      bio: profileData.bio || ''
+    };
+  },
+
+  async updateNotifications(notificationData) {
+    await delay(300);
+    // Simulate notification settings update
+    return {
+      notifications: { ...notificationData }
+    };
+  },
+
+  async updatePreferences(preferencesData) {
+    await delay(300);
+    // Simulate preferences update
+    return {
+      preferences: { ...preferencesData }
+    };
   },
 
   async getSystemHealth() {
