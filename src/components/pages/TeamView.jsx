@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import Avatar from '@/components/atoms/Avatar';
 import ProgressRing from '@/components/atoms/ProgressRing';
+import Input from '@/components/atoms/Input';
+import Label from '@/components/atoms/Label';
+import Select from '@/components/atoms/Select';
 import ApperIcon from '@/components/ApperIcon';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
@@ -19,7 +23,11 @@ const TeamView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [inviteForm, setInviteForm] = useState({ name: '', email: '', role: 'member' });
+  const [isInviting, setIsInviting] = useState(false);
+  const [openOptionsMenu, setOpenOptionsMenu] = useState(null);
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
   useEffect(() => {
     loadData();
   }, []);
@@ -88,8 +96,8 @@ const TeamView = () => {
         title="No team members"
         message="Add team members to start collaborating on projects."
         icon="Users"
-        actionLabel="Invite Team Member"
-        onAction={() => console.log('Invite team member')}
+actionLabel="Invite Team Member"
+        onAction={() => setIsInviteModalOpen(true)}
       />
     );
   }
@@ -104,10 +112,7 @@ const TeamView = () => {
         </div>
 <Button 
           variant="primary"
-          onClick={() => {
-            // TODO: Open invite member modal
-            console.log('Opening invite member modal');
-          }}
+          onClick={() => setIsInviteModalOpen(true)}
         >
           <ApperIcon name="UserPlus" size={16} />
           Invite Member
@@ -236,13 +241,13 @@ const TeamView = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-end space-x-2">
-<Button 
+<div className="mt-4 flex justify-end space-x-2">
+                  <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => {
-                      // TODO: Open chat with user
-                      console.log('Opening chat with', user.name);
+                      toast.info(`Opening chat with ${user.name}`);
+                      // Integration point for future chat feature
                     }}
                   >
                     <ApperIcon name="MessageCircle" size={16} />
@@ -251,29 +256,295 @@ const TeamView = () => {
                     variant="ghost" 
                     size="sm"
                     onClick={() => {
-                      // TODO: Send email to user
-                      console.log('Sending email to', user.email);
+                      window.location.href = `mailto:${user.email}?subject=Team Communication&body=Hi ${user.name},%0D%0A%0D%0A`;
+                      toast.success(`Opening email to ${user.name}`);
                     }}
                   >
                     <ApperIcon name="Mail" size={16} />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => {
-                      // TODO: Open user options menu
-                      console.log('Opening options for', user.name);
-                    }}
-                  >
-                    <ApperIcon name="MoreHorizontal" size={16} />
-                  </Button>
+                  <div className="relative">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        setOpenOptionsMenu(openOptionsMenu === user.Id ? null : user.Id);
+                      }}
+                    >
+                      <ApperIcon name="MoreHorizontal" size={16} />
+                    </Button>
+                    {openOptionsMenu === user.Id && (
+                      <UserOptionsMenu 
+                        user={user}
+                        onClose={() => setOpenOptionsMenu(null)}
+                        onEdit={(editUser) => handleEditUser(editUser)}
+                        onRemove={(removeUser) => handleRemoveUser(removeUser)}
+                        onRoleChange={(userId, newRole) => handleRoleChange(userId, newRole)}
+                        isUpdatingRole={isUpdatingRole}
+                      />
+                    )}
+                  </div>
                 </div>
               </Card>
             </motion.div>
           );
         })}
-      </div>
+</div>
+
+      {/* Invite Member Modal */}
+      {isInviteModalOpen && (
+        <InviteModal
+          isOpen={isInviteModalOpen}
+          onClose={() => {
+            setIsInviteModalOpen(false);
+            setInviteForm({ name: '', email: '', role: 'member' });
+          }}
+          onInvite={handleInviteUser}
+          inviteForm={inviteForm}
+          setInviteForm={setInviteForm}
+          isInviting={isInviting}
+        />
+      )}
     </div>
+  );
+
+  // Handle invite user functionality
+  async function handleInviteUser() {
+    if (!inviteForm.name.trim() || !inviteForm.email.trim()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (!inviteForm.email.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsInviting(true);
+    try {
+      const newUser = await userService.create({
+        name: inviteForm.name.trim(),
+        email: inviteForm.email.trim(),
+        role: inviteForm.role,
+        avatar: null,
+        status: 'active',
+        joinDate: new Date().toISOString()
+      });
+
+      setUsers(prev => [...prev, newUser]);
+      setIsInviteModalOpen(false);
+      setInviteForm({ name: '', email: '', role: 'member' });
+      toast.success(`${newUser.name} has been invited to the team!`);
+    } catch (err) {
+      toast.error(`Failed to invite user: ${err.message}`);
+    } finally {
+      setIsInviting(false);
+    }
+  }
+
+  // Handle edit user functionality
+  function handleEditUser(user) {
+    setOpenOptionsMenu(null);
+    toast.info(`Edit functionality for ${user.name} will be implemented soon`);
+    // Future implementation: Open edit user modal
+  }
+
+  // Handle remove user functionality
+  async function handleRemoveUser(user) {
+    setOpenOptionsMenu(null);
+    
+    if (!window.confirm(`Are you sure you want to remove ${user.name} from the team? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      await userService.delete(user.Id);
+      setUsers(prev => prev.filter(u => u.Id !== user.Id));
+      toast.success(`${user.name} has been removed from the team`);
+    } catch (err) {
+      toast.error(`Failed to remove user: ${err.message}`);
+    }
+  }
+
+  // Handle role change functionality
+  async function handleRoleChange(userId, newRole) {
+    setIsUpdatingRole(true);
+    try {
+      const updatedUser = await userService.updateRole(userId, newRole);
+      setUsers(prev => prev.map(u => u.Id === userId ? updatedUser : u));
+      setOpenOptionsMenu(null);
+      toast.success(`User role updated to ${newRole}`);
+    } catch (err) {
+      toast.error(`Failed to update role: ${err.message}`);
+    } finally {
+      setIsUpdatingRole(false);
+    }
+  }
+};
+
+// Invite Modal Component
+const InviteModal = ({ isOpen, onClose, onInvite, inviteForm, setInviteForm, isInviting }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">Invite Team Member</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <ApperIcon name="X" size={20} />
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="name">Name *</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Enter full name"
+              value={inviteForm.name}
+              onChange={(e) => setInviteForm(prev => ({ ...prev, name: e.target.value }))}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="email">Email *</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter email address"
+              value={inviteForm.email}
+              onChange={(e) => setInviteForm(prev => ({ ...prev, email: e.target.value }))}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="role">Role</Label>
+            <Select
+              value={inviteForm.role}
+              onValueChange={(value) => setInviteForm(prev => ({ ...prev, role: value }))}
+              className="mt-1"
+            >
+              <option value="member">Member</option>
+              <option value="admin">Admin</option>
+              <option value="manager">Manager</option>
+              <option value="viewer">Viewer</option>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-3 mt-6">
+          <Button variant="outline" onClick={onClose} disabled={isInviting}>
+            Cancel
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={onInvite}
+            disabled={isInviting}
+          >
+            {isInviting ? (
+              <>
+                <ApperIcon name="Loader2" size={16} className="animate-spin" />
+                Inviting...
+              </>
+            ) : (
+              <>
+                <ApperIcon name="UserPlus" size={16} />
+                Send Invite
+              </>
+            )}
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+// User Options Menu Component
+const UserOptionsMenu = ({ user, onClose, onEdit, onRemove, onRoleChange, isUpdatingRole }) => {
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 z-40" onClick={onClose} />
+      
+      {/* Menu */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+      >
+        <div className="py-2">
+          <button
+            onClick={() => onEdit(user)}
+            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+          >
+            <ApperIcon name="Edit" size={16} />
+            <span>Edit Profile</span>
+          </button>
+          
+          <button
+            onClick={() => setShowRoleSelector(!showRoleSelector)}
+            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between"
+            disabled={isUpdatingRole}
+          >
+            <div className="flex items-center space-x-2">
+              <ApperIcon name="Shield" size={16} />
+              <span>Change Role</span>
+            </div>
+            <ApperIcon name={showRoleSelector ? "ChevronUp" : "ChevronDown"} size={16} />
+          </button>
+
+          {showRoleSelector && (
+            <div className="border-t border-gray-100 py-1">
+              {['member', 'admin', 'manager', 'viewer'].map(role => (
+                <button
+                  key={role}
+                  onClick={() => onRoleChange(user.Id, role)}
+                  className={`w-full px-8 py-2 text-left text-sm hover:bg-gray-50 capitalize ${
+                    user.role === role ? 'text-primary font-medium' : 'text-gray-600'
+                  }`}
+                  disabled={isUpdatingRole || user.role === role}
+                >
+                  {isUpdatingRole ? (
+                    <div className="flex items-center space-x-2">
+                      <ApperIcon name="Loader2" size={14} className="animate-spin" />
+                      <span>{role}</span>
+                    </div>
+                  ) : (
+                    role
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="border-t border-gray-100 pt-1">
+            <button
+              onClick={() => onRemove(user)}
+              className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+            >
+              <ApperIcon name="UserMinus" size={16} />
+              <span>Remove from Team</span>
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </>
   );
 };
 

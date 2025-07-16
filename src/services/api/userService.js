@@ -51,7 +51,23 @@ export const userService = {
       throw new Error('User not found');
     }
     
-    usersData.splice(index, 1);
+usersData.splice(index, 1);
     return { success: true };
+  },
+
+  async updateRole(id, newRole) {
+    await delay(300);
+    const index = usersData.findIndex(user => user.Id === id);
+    if (index === -1) {
+      throw new Error('User not found');
+    }
+    
+    const updatedUser = {
+      ...usersData[index],
+      role: newRole
+    };
+    
+    usersData[index] = updatedUser;
+    return { ...updatedUser };
   }
 };
